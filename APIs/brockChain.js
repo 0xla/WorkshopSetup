@@ -19,12 +19,15 @@ const purchase = async (request, response) =>
         response.status(500).send({ error: 'not authorized' })
     }
     else {
+        console.log(request.body.customer);
+        console.log(request.body.amount);
         const {customer, amount} = request.body
         const web3 = new Web3(RPC)
         var gasprice = await web3.eth.getGasPrice()
         gasprice = gasprice * 2
         var nonce = await web3.eth.getTransactionCount(WALLET)
         const CT = new web3.eth.Contract(abi, ADDRESS)
+        console.log(CT.methods);
         var string = amount.toString()
         const weiCount = web3.utils.toWei(string, 'ether')
         const payout = web3.utils.toHex(weiCount)
@@ -55,26 +58,27 @@ const purchase = async (request, response) =>
                 }
             })
         })
-        const transactionTracker = (request, response) => {        
-            fetch(
-                `https://api.covalenthq.com/v1/${CHAINID}/address/${WALLET}/transfers_v2/?contract-address=${ADDRESS}&key=${COVELANTKEY}`,
-                    {
-                        method: "GET",
-                        mode: "cors",
-                        headers: {
-                            "Content-Type": "application/json",
-                            Accept: "application/json",
-                        }
-                    }
-            )
-            .then((response) => response.json())
-            .then((covelantResponse) => {
-                covelantResponse.map((transaction) => {
-                    console.log(transaction)
-                })
-            });
-        }
+        response.status(200).send({ message: 'Great Job!' })
     }
+}
+const transactionTracker = (request, response) => {        
+    fetch(
+        `https://api.covalenthq.com/v1/${CHAINID}/address/${WALLET}/transfers_v2/?contract-address=${ADDRESS}&key=${COVELANTKEY}`,
+            {
+                method: "GET",
+                mode: "cors",
+                headers: {
+                    "Content-Type": "application/json",
+                    Accept: "application/json",
+                }
+            }
+    )
+    .then((response) => response.json())
+    .then((covelantResponse) => {
+        covelantResponse.map((transaction) => {
+            console.log(transaction)
+        })
+    });
 }
 
 

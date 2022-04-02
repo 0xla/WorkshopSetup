@@ -5,6 +5,8 @@ const port = 3000;
 const q = require("./queries.js");
 require("dotenv").config();
 
+app.use(express.json());
+app.use(bodyParser.urlencoded({ extended: false }))
 
 app.post(`/purchase/:api_key`, q.brockChain.purchase)
 // app.get(`trackTransations/:api_key`, q.brockChain.trackTransations)
